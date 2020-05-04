@@ -1,0 +1,54 @@
+{% extends 'admin.html' %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-body">
+            <form onsubmit="return false;">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="">Title:</label>
+                            <input type="text" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="">Subtitle:</label>
+                            <input type="text" class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <label for="editorjs">Content:</label>
+                <div id="editorjs"></div>
+
+                <button id="save">
+                    Save
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+    
+
+    <script>
+        const editor = new EditorJS();
+        
+        const save_button = document.getElementById('save')
+
+        save_button.addEventListener('click', function() {
+
+            editor.save().then(function(data) {
+                console.log(data)
+            })
+
+        })
+
+
+
+    </script>
+
+
+{% endblock content %}
+
