@@ -1,0 +1,83 @@
+{% extends 'admin.html' %}
+
+{% block content %}
+    <div id="app" class="card">
+        <div class="card-body">
+            <form action="{% url 'posts:detail' post.id %}" method="post" ref="form" @submit.prevent="save()">
+
+                {% csrf_token %}
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="title">Title:</label>
+                            <input value="{{post.title}}" id="title" name="title" type="text" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="subtitle">Subtitle:</label>
+                            <input value="{{post.subtitle}}" id="subtitle" name="subtitle" type="text" class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <input type="hidden" id="content" name="content">
+
+                <label for="editorjs">Content:</label>
+                <div id="editorjs"></div>
+
+                <button type="submit" class="btn btn-success" id="save">
+                    Save
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/simple-image@latest"></script>
+    <script>
+
+        var content = JSON.parse({{ content | safe }})
+
+        const editor = new EditorJS({
+            data: content,
+            tools: {
+                header: {
+                    class: Header,
+                    config: {
+                        placeholder: 'Enter a header',
+                        levels: [1,2,3,4],
+                        defaultLevel: 1
+                    },
+                    shortcut: 'CMD+SHIFT+H'
+                },
+            }
+        });
+
+        const app = new Vue({
+            el: '#app',
+            data: {
+                content: ''
+            },
+            methods: {
+                save () {
+                    console.log(this.$refs.form)
+                    editor.save()
+                    .then(content => {
+                        document.getElementById('content').value = JSON.stringify(content)
+                        this.$refs.form.submit()
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        alert(error.message)
+                    })
+                }
+            }
+        })
+    </script>
+
+
+{% endblock content %}
+
